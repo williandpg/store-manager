@@ -13,7 +13,16 @@ const findById = async (id) => {
   return { status: 'SUCCESS', data: product };
 };
 
+const register = async (name) => {
+  const product = await productModels.register(name);
+  if (!name) {
+    return { status: 'INVALID_DATA', data: { message: '"name" is required' } };
+  }
+  return { status: 'SUCCESS', data: product };
+};
+
 module.exports = {
   getAll,
   findById,
+  register,
 };
