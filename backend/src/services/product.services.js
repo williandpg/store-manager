@@ -18,6 +18,10 @@ const register = async (name) => {
   if (!name) {
     return { status: 'INVALID_DATA', data: { message: '"name" is required' } };
   }
+  if (name.length < 5) {
+    return { status: 'INVALID_DATA', 
+      data: { message: '"name" length must be at least 5 characters long' } };
+  }
   return { status: 'SUCCESS', data: product };
 };
 
