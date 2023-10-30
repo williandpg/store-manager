@@ -13,7 +13,13 @@ const findById = async (id) => {
   return { status: 'SUCCESS', data: sale };
 };
 
+const register = async (name) => {
+  const sale = await saleModels.register(name);
+  return { status: 'CREATED', data: sale };
+};
+
 module.exports = {
   getAll,
   findById,
+  register,
 };

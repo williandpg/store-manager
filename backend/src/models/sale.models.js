@@ -26,7 +26,13 @@ const findById = async (id) => {
   return camelize(sale);
 };
 
+const register = async (date) => {
+  const [sales] = await connection.execute('INSERT INTO sales (date) VALUES (?)', [date]);
+  return camelize({ id: sales.insertId, date });
+};
+
 module.exports = {
   getAll,
   findById,
+  register,
 };
