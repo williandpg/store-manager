@@ -8,4 +8,6 @@ routes.get('/products/:id', productControllers.findById);
 
 routes.post('/products', nameMiddleware, productControllers.register); 
 
+routes.put('/products/:id', nameMiddleware, productControllers.update);
+
 module.exports = routes;

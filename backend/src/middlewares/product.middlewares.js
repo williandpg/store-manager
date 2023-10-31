@@ -1,3 +1,5 @@
+const { productModels } = require('../models');
+
 const nameMiddleware = async (req, res, next) => {
   const { name } = req.body;
   if (!name || name === '') { 
@@ -8,7 +10,23 @@ const nameMiddleware = async (req, res, next) => {
   }
   next();
 };
-  
+
+const productMiddleware = async (req, res, next) => {
+  const arrayOfProduct = [];
+  const promisses = req.body.map(async (element) => {
+    const product = await productModels.findById(element.productId);
+    arrayOfProduct.push(product[0]);
+  });
+  await Promise.all(promisses);
+  for (let index = 0; index < arrayOfProduct.length; index += 1) {
+    if (arrayOfProduct[index] === undefined) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+  }
+  next();
+};
+
 module.exports = {
   nameMiddleware,
+  productMiddleware,
 };
