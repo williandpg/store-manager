@@ -5,13 +5,13 @@ const app = express();
 
 app.use(express.json());
 
-// não remova esse endpoint, é para o avaliador funcionar 
+// não remova esse endpoint, é para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.json({ status: 'Store Manager UP!' });
 });
 
-app.use('/products', productRoutes);
+app.use(productRoutes);
 
-app.use('/sales', saleRoutes);
+app.use(saleRoutes);
 
 module.exports = app;

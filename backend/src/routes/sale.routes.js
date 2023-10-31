@@ -1,10 +1,10 @@
 const routes = require('express').Router();
 const { saleControllers } = require('../controllers');
 
-routes.get('/', saleControllers.getAll);
+routes.get('/sales', saleControllers.findAll); 
 
-routes.get('/:id', saleControllers.findById);
+routes.get('/sales/:id', saleControllers.findById);
 
-routes.post('/', saleControllers.register);
+routes.post('/sales', saleControllers.register); 
 
 module.exports = routes;

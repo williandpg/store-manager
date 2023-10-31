@@ -1,38 +1,45 @@
-const camelize = require('camelize');
 const connection = require('./connection');
 
-const getAll = async () => {
-  const [sales] = await connection.execute(`
-  SELECT 
-  sp.sale_id,
-  s.date,
-  sp.product_id,
-  sp.quantity 
-  FROM sales_products AS sp
-  INNER JOIN sales as s ON sp.sale_id = s.id
-  ORDER BY sp.sale_id, sp.product_id`);
-  return camelize(sales);
+const findAll = async () => {
+  const [sales] = await connection.execute(
+    `SELECT 
+      sales_products.sale_id AS saleId,
+      sales_products.product_id AS productId,
+      sales_products.quantity,
+      sales.date
+    FROM sales_products 
+    JOIN sales ON sales_products.sale_id = sales.id;`,
+  );
+  return sales;
 };
 
 const findById = async (id) => {
-  const [[sale]] = await connection.execute(`
-  SELECT 
-  s.date,
-  sp.product_id,
-  sp.quantity
-  FROM sales_products AS sp
-  INNER JOIN sales as s ON sp.sale_id = s.id
-  WHERE sp.sale_id = ?`, [id]);
-  return camelize(sale);
+  const [sale] = await connection.execute(`
+    SELECT
+      sales_products.product_id AS productId, 
+      sales_products.quantity, sales.date
+    FROM sales_products 
+    JOIN sales ON sales_products.sale_id = sales.id
+    WHERE sales.id = ?`, [id]);
+  return sale;
 };
 
-const register = async (date) => {
-  const [sales] = await connection.execute('INSERT INTO sales (date) VALUES (?)', [date]);
-  return camelize({ id: sales.insertId, date });
+const register = async (products) => {
+  const [sale] = await connection.execute(
+    'INSERT INTO sales (date) VALUES (NOW())',
+  );
+  const { insertId: id } = sale;
+  const promises = products.map((product) =>
+    connection.execute(
+      'INSERT INTO sales_products (sale_id, product_id, quantity) VALUES (?, ?, ?)',
+      [id, product.productId, product.quantity],
+    ));
+  await Promise.all(promises);
+  return { id: sale.insertId, itemsSold: products };
 };
 
 module.exports = {
-  getAll,
+  findAll,
   findById,
   register,
 };

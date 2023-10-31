@@ -1,10 +1,11 @@
 const routes = require('express').Router();
 const { productControllers } = require('../controllers');
+const { nameMiddleware } = require('../middlewares/product.middlewares');
 
-routes.get('/', productControllers.getAll);
+routes.get('/products', productControllers.findAll);
 
-routes.get('/:id', productControllers.findById);
+routes.get('/products/:id', productControllers.findById);
 
-routes.post('/', productControllers.register);
+routes.post('/products', nameMiddleware, productControllers.register); 
 
 module.exports = routes;

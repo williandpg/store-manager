@@ -1,23 +1,22 @@
-const camelize = require('camelize');
 const connection = require('./connection');
 
-const getAll = async () => {
-  const [products] = await connection.execute('SELECT * FROM products ORDER BY id');
-  return camelize(products);
+const findAll = async () => {
+  const [products] = await connection.execute('SELECT * from products');
+  return products;
 };
 
 const findById = async (id) => {
-  const [[product]] = await connection.execute('SELECT * FROM products WHERE id = ?', [id]);
-  return camelize(product);
+  const [product] = await connection.execute('SELECT * from products WHERE id = ?', [id]);
+  return product;
 };
 
 const register = async (name) => {
-  const [products] = await connection.execute('INSERT INTO products (name) VALUES (?)', [name]);
-  return camelize({ id: products.insertId, name });
+  const [productNew] = await connection.execute('INSERT INTO products (name) VALUES (?)', [name]);
+  return { id: productNew.insertId, name };
 };
 
 module.exports = {
-  getAll,
+  findAll,
   findById,
   register,
 };
